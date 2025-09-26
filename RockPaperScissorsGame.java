@@ -6,6 +6,8 @@ public class RockPaperScissorsGame {
     private static final String PAPER = "Paper";
     private static final String SCISSORS = "Scissors";
 
+
+    // ако комп бие 3 пъти подред трябва да намалим шансовете за победа с 50%!
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -16,6 +18,9 @@ public class RockPaperScissorsGame {
         int computerVictories = 0;
         int playerVictories = 0;
         int draws = 0;
+        int computerConsecutiveWins = 0;
+        int playerConsecutiveWins = 0;
+
         while (!playerMove.equalsIgnoreCase("STOP")){
             if (playerMove.equalsIgnoreCase("r") || playerMove.equalsIgnoreCase("rock")){
                 playerMove= ROCK;
@@ -31,25 +36,38 @@ public class RockPaperScissorsGame {
             Random random = new Random();
             int computerRandomNumber = random.nextInt(3);
 
-            String computerMove = switch (computerRandomNumber) {
-                case 0 -> ROCK;
-                case 1 -> PAPER;
-                case 2 -> SCISSORS;
-                default -> "";
-            };
+            String computerMove = getComputerMove(computerRandomNumber);
+
+            boolean lossCheck = (playerMove.equals(ROCK) && computerMove.equals(PAPER)) ||
+                    (playerMove.equals(PAPER) && computerMove.equals(SCISSORS)) ||
+                    (playerMove.equals(SCISSORS) && computerMove.equals(ROCK));
+
+            boolean winCheck = (playerMove.equals(ROCK) && computerMove.equals(SCISSORS)) ||
+                    (playerMove.equals(PAPER) && computerMove.equals(ROCK)) ||
+                    (playerMove.equals(SCISSORS) && computerMove.equals(PAPER));
+
+            if (computerConsecutiveWins==3){
+                if (lossCheck){
+                    computerRandomNumber=random.nextInt(3);
+                    computerMove=getComputerMove(computerRandomNumber);
+                }
+            } else if (playerConsecutiveWins == 3) {
+                if (winCheck){
+                    computerRandomNumber=random.nextInt(3);
+                    computerMove=getComputerMove(computerRandomNumber);
+                }
+            }
 
             System.out.printf("The computer picked %s\n",computerMove);
 
-            if ((playerMove.equals(ROCK) && computerMove.equals(SCISSORS)) ||
-                    (playerMove.equals(PAPER) && computerMove.equals(ROCK)) ||
-                    (playerMove.equals(SCISSORS) && computerMove.equals(PAPER))){
+            if (winCheck){
                 System.out.println("You win.");
                 playerVictories++;
-            } else if ((playerMove.equals(ROCK) && computerMove.equals(PAPER)) ||
-                    (playerMove.equals(PAPER) && computerMove.equals(SCISSORS)) ||
-                    (playerMove.equals(SCISSORS) && computerMove.equals(ROCK))) {
+                playerConsecutiveWins++;
+            } else if (lossCheck) {
                 System.out.println("You lose.");
                 computerVictories++;
+                computerConsecutiveWins++;
             }else {
                 System.out.println("Draw.");
                 draws++;
@@ -65,6 +83,15 @@ public class RockPaperScissorsGame {
                 Draws: %d
                 """,computerVictories,playerVictories,draws);
 
+    }
+
+    private static String getComputerMove(int computerRandomNumber) {
+        return switch (computerRandomNumber) {
+            case 0 -> ROCK;
+            case 1 -> PAPER;
+            case 2 -> SCISSORS;
+            default -> "";
+        };
     }
 
 }
