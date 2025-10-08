@@ -14,3 +14,5 @@ In the end of a game session the program will print out the statistics of the se
 There is also a feature where the computer/player's chances of a win increase depending on
 consecutive win either for the player or the computer. Meaning if the player has 3 consecutive wins 
 the computer's chances of a win increase.
+
+[Source code](RockPaperScissorsGame.java)
